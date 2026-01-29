@@ -23,18 +23,21 @@ class SoilInput(BaseModel):
     pH: float
     Moisture: float
 
+# ✅ HEALTH CHECK (THIS FIXES YOUR ERROR)
 @app.get("/")
 def health():
     return {"message": "Soil Quality API is running 🚀"}
 
+# ✅ PREDICTION
 @app.post("/")
 def predict(data: SoilInput):
-    X = pd.DataFrame([[data.Nitrogen, data.Phosphorus, data.Potassium, data.pH, data.Moisture]],
-                     columns=FEATURES)
+    X = pd.DataFrame(
+        [[data.Nitrogen, data.Phosphorus, data.Potassium, data.pH, data.Moisture]],
+        columns=FEATURES
+    )
 
     pred = model.predict(X)[0]
     confidence = model.predict_proba(X).max()
-
     label = le.inverse_transform([pred])[0]
 
     return {
